@@ -11,8 +11,12 @@
 ###                                                                          ###
 ################################################################################
 
+[Unit]
+Description=Daily timer for %i
+
 [Timer]
 OnCalendar=*-*-* 3:23:00
+Unit=%i.service
 
 [Install]
 WantedBy=timers.target
