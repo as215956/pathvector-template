@@ -31,6 +31,8 @@ by pathvector.
 | /etc/bird/definitions/         | Extra bird2 definitions used by my functions (also includes the auto generated ones) |
 | /etc/bird/functions/           | Extra bird2 functions called by pathvector config                                    |
 | /etc/bird/protocols/           | Extra bird2 protocols (example ospf)                                                 |
+| /etc/cron.d/update-pathvector  | Example crontab running once a day at 03:23                                          |
+| /etc/systemd/user/             | Example systemd service and timer running once a day at 03:23                        |
 
 Feel free to adjust to locations of these files, but be aware of any hardcoded paths!
 In case you modify the "manual_includes.conf" file take note off the order loading the other included files, first definitions, then functions (that need the definitions) and then protocols that could need functions and/or definitions.
