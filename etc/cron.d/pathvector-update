@@ -1,0 +1,14 @@
+################################################################################
+###                                                                          ###
+###   AS215956.net - Pathvector Updater                                      ###
+##########################################                                   ###
+###                                                                          ###
+###   File      : crontab                                                    ###
+###   Version   : 2024.12-001                                                ###
+###   Copyright : 2024 (and beyond) - Dennis de Houx, AS215956, All In One   ###
+###   Author    : Dennis de Houx <dennis@dehoux.be>                          ###
+###   License   : MIT                                                        ###
+###                                                                          ###
+################################################################################
+
+23 3 * * * bird /opt/as215956/pathvector/update-pathvector.sh --log > /dev/null 2>&1
