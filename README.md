@@ -66,7 +66,7 @@ Script parameters:
 | --dry-run | Run the script but do not reload bird2         |
 | --log     | Write output to log file instead of showing it |
 
-I also recommend to place this script in a crontab or systemd timer, how many times you run the update is up to you. But I would not recommend to run it more then once an hour, personally I think once every 24 hours is fine.
+I also recommend to run this script in a crontab or systemd timer, how many times you run the update is up to you. But I would not recommend to run it more then once an hour, personally I think once every 24 hours is fine. Examples are provided in "/etc/cron.d" and "/etc/systemd/user".
 
 ## Special thanks to
 
