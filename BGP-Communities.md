@@ -53,14 +53,14 @@ This is handled by vectorpath by default
 
 ## Prepend
 
-| Community | Description                             |
-| --------- | --------------------------------------- |
-| ASN:600:1 | Prepend the peer AS one time            |
-| ASN:600:2 | Prepend the peer AS two time            |
-| ASN:600:3 | Prepend the peer AS three time          |
-| ASN:601:n | Prepend the peer AS one time to AS[n]   |
-| ASN:602:n | Prepend the peer AS two time to AS[n]   |
-| ASN:603:n | Prepend the peer AS three time to AS[n] |
+| Community | Description                         |
+| --------- | ----------------------------------- |
+| ASN:600:1 | Prepend the ASN one time            |
+| ASN:600:2 | Prepend the ASN two time            |
+| ASN:600:3 | Prepend the ASN three time          |
+| ASN:601:n | Prepend the ASN one time to AS[n]   |
+| ASN:602:n | Prepend the ASN two time to AS[n]   |
+| ASN:603:n | Prepend the ASN three time to AS[n] |
 
 ## Local preference
 
