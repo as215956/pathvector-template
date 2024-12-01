@@ -114,11 +114,13 @@ This is handled by vectorpath by default
 
 ## Local preference
 
-By default, customers/downstreams are imported to BGP with LocalPref 5000. However, we provides a LocalPref manipulation community that will allow you to control the link over which traffic comes in for active-passive backup purposes. You can set the LocalPref to 4000 by tagging the route with ASN:610:4000, which is still higher than non-customer routes.
+By default, customers/downstreams are imported to BGP with LocalPref 5000. However, we provides a LocalPref manipulation community that will allow you to control the link over which traffic comes in for active-passive backup purposes. You can set the LocalPref to 5100 by tagging the route with ASN:610:5100, which is higher and makes this the preferred active route.
 
 | Community | Description                 |
 | --------- | --------------------------- |
 | ASN:610:x | Set local preference to [x] |
+
+Overview of the default used local preference, the higher the number the more preferred the route is going to be.
 
 | LocalPref | Description                                   |
 | --------- | --------------------------------------------- |
@@ -129,7 +131,9 @@ By default, customers/downstreams are imported to BGP with LocalPref 5000. Howev
 | 4500      | Direct PNI Session (over physical connection) |
 | 5000      | Downstream / Customer                         |
 
-## Exports (do not export)
+## Exports (do not export to)
+
+Do not advertise the peer or prefixes to the assigned bgp session.
 
 | Community                   | Description                              |
 | --------------------------- | ---------------------------------------- |
