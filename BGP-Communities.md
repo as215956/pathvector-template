@@ -1,6 +1,6 @@
 # AS215956.net - Pathvector Template BGP Communities
 
-The BGP Communities used in this template file, feel free to customize, add, remove any bgp community you use. The informational BGP Communities are defined in "/etc/bird/definitions/general.conf" and used in function calls in "/etc/bird/functions/[im|ex]port_default_communities.conf".
+The BGP Communities used in this template file, feel free to customize, add, remove any bgp community you use. The informational BGP Communities variables are defined in "/etc/bird/definitions/general.conf" and used in function calls in "/etc/bird/functions/[im|ex]port_default_communities.conf".
 
 ## Variables
 
