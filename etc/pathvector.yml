@@ -1,0 +1,144 @@
+################################################################################
+###                                                                          ###
+###   AS215956.net - Pathvector Updater                                      ###
+##########################################                                   ###
+###                                                                          ###
+###   File      : pathvector config file                                     ###
+###   Version   : 2024.12-001                                                ###
+###   Copyright : 2024 (and beyond) - Dennis de Houx, AS215956, All In One   ###
+###   Author    : Dennis de Houx <dennis@dehoux.be>                          ###
+###   License   : MIT                                                        ###
+###                                                                          ###
+################################################################################
+
+
+###
+### NOTE: please replace all placeholders in { } !!!
+###       and adjust this config to your needs
+###
+
+
+### General Settings
+########################################
+
+### Basic router settings
+asn: {YOUR-ASN}
+router-id: {YOUR-ROUTER-IPv4}
+accept-default: true
+default-route: false
+keep-filtered: true
+#merge-paths: true
+
+### Default bgp communities on all exports
+origin-communities:
+  - {YOUR-ASN}:100:1
+
+local-communities:
+  - {YOUR-ASN}:100:1
+
+### Announce local prefixes
+prefixes:
+  - 2001:0DB8:beef::/40
+  - 2001:0DB8:dead::/48
+
+### Default add on import on all sessions (remove comment if you want to use)
+#add-on-import:
+#  - {YOUR-ASN}:xxx:xxx
+
+### Default add on export on all sessions (remove comment if you want to use)
+#add-on-export:
+#  - {YOUR-ASN}:xxx:xxx
+
+### Opinionated Tier1 transit list
+transit-asns:
+  - 174   # Cogent Communications
+  - 209   # Qwest (HE carries this on IXPs IPv6 (Jul 12 2018)) / CenturyLink Communications
+  - 701   # UUNET / Verizon Business
+  - 702   # UUNET / Verizon Business
+  - 1239  # Sprint
+  - 1299  # Telia / Arelion Sweden / Twelve99
+  - 2149  # Cogent Communications
+  - 2914  # NTT Communications
+  - 3257  # GTT Backbone
+  - 3320  # Deutsche Telekom AG (DTAG)
+  - 3356  # Level3
+  - 3491  # PCCW Global
+  - 3549  # Level3
+  - 3561  # Savvis / CenturyLink Communications
+  - 4134  # Chinanet Backbone
+  - 5511  # Orange opentransit
+  - 6453  # Tata Communications (America)
+  - 6461  # Zayo Bandwidth
+  - 6494  # Cogent Communications
+  - 6640  # CenturyLink Communications
+  - 6762  # Seabone / Telecom Italia Sparkle
+  - 6830  # Liberty Global
+  - 6939  # Hurricane Electric
+  - 7018  # AT&T Services
+  - 58682 # Level3 Carrier
+
+### RPKI & IRR settings
+rpki-enable: true
+rtr-server: rtr.rpki.cloudflare.com:8282
+irr-server: rr.ntt.net
+irr-query-timeout: 30
+
+### Pathvector settings
+web-ui-file: /opt/as215956/pathvector/ui/index.html
+
+### PeeringDB settings
+peeringdb-api-key: "YOUR-API-KEY"
+peeringdb-query-timeout: 60
+
+### bgpq4 settings
+bgpq-args: -S AFRINIC,APNIC,ARIN,LACNIC,RIPE
+
+
+### Kernel Settings
+########################################
+
+kernel:
+  learn: false
+  export: true
+#  statics:
+#    "2001:0DB8:3019:a013::/64": "fe80::be24:11ff:fed8:9ab"
+
+
+### Peer templates
+########################################
+templates:
+
+### iBGP
+  ibgp:
+
+### Upstream / Transit
+  upstream:
+
+### Internet Exchanges (Route Servers)
+  routeserver:
+
+### Direct Peer (physical / tunnel)
+  peerPNI:
+
+### Direct Peer (over Internet Exchange)
+  peerIX:
+
+### Downstream / Customers
+  downstream:
+
+
+### BGP Sessions
+########################################
+peers:
+
+### iBGP
+
+### Upstream / Transit
+
+### Internet Exchanges (Route Servers)
+
+### Direct Peer (physical / tunnel)
+
+### Direct Peer (over Internet Exchange)
+
+### Downstream / Customers
