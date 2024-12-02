@@ -13,8 +13,8 @@
 
 
 ###
-### NOTE: please replace all placeholders in { } !!!
-###       and adjust this config to your needs
+### NOTE: please replace all placeholders in { } and remove the brackets { } !!!
+###       feel free to adjust this config to your needs
 ###
 
 
@@ -24,6 +24,7 @@
 ### Basic router settings
 asn: {YOUR-ASN}
 router-id: {YOUR-ROUTER-IPv4}
+hostname: {YOUR-ROUTER-HOSTNAME}
 accept-default: true
 default-route: false
 keep-filtered: true
@@ -38,8 +39,8 @@ local-communities:
 
 ### Announce local prefixes
 prefixes:
-  - 2001:0DB8:beef::/40
-  - 2001:0DB8:dead::/48
+  - {2001:0DB8:beef::/40}
+  - {2001:0DB8:dead::/48}
 
 ### Default add on import on all sessions (remove comment if you want to use)
 #add-on-import:
@@ -48,6 +49,21 @@ prefixes:
 ### Default add on export on all sessions (remove comment if you want to use)
 #add-on-export:
 #  - {YOUR-ASN}:xxx:xxx
+
+### Default blocklist ASN and/or prefixes (remove comment if you want to use)
+#blocklist:
+# - {AS65536}
+# - {2001:0DB8:beef::/48}
+
+### Default blocklist ASN and/or prefixes from url (remove comment if you want to use)
+#blocklist-urls:
+# - {http://localhost/blocklist/prefixes}
+# - {http://localhost/blocklist/asns}
+
+### Default blocklist ASN and/or prefixes from files (remove comment if you want to use)
+#blocklist-files:
+# - {/opt/as215956/pathvector/blocklist.txt}
+# - {/etc/bird/define/blocklist.conf}
 
 ### Opinionated Tier1 transit list
 transit-asns:
@@ -77,18 +93,27 @@ transit-asns:
   - 7018  # AT&T Services
   - 58682 # Level3 Carrier
 
-### RPKI & IRR settings
+### RPKI & IRR settings (only use one rtr server)
 rpki-enable: true
-rtr-server: rtr.rpki.cloudflare.com:8282
-irr-server: rr.ntt.net
+### ripe.net (https://rpki-validator.ripe.net/)
+#rtr-server: rpki-validator.ripe.net:3323   # IPv4: 193.0.11.46, IPv6: 2001:67c:2e8:25::c100:b2e
+### rpki.cloud (https://github.com/rpki-cloud/rpki.cloud)
+#rtr-server: r1.rpki.cloud:3323             # IPv4: 184.73.232.63, IPv6: 2600:1f18:e99:5401:e875:17cd:7a52:5d6c
+#rtr-server: r2.rpki.cloud:3323             # IPv4: 52.52.161.24, IPv6: 2600:1f1c:244:6000:e347:c4c8:56a2:d665
+### cloudflare (https://rpki.cloudflare.com)
+rtr-server: rtr.rpki.cloudflare.com:8282    # IPv4: 172.65.0.2, IPv6: 2606:4700:60::2
+irr-server: rr.ntt.net                      # IPv4: 128.241.192.40, IPv6: 2001:418:3ff:5::192:40
 irr-query-timeout: 30
 
 ### Pathvector settings
+log-file: /var/log/pathvector.log
 web-ui-file: /opt/as215956/pathvector/ui/index.html
 
 ### PeeringDB settings
-peeringdb-api-key: "YOUR-API-KEY"
+peeringdb-url: https://peeringdb.com/api/
+peeringdb-api-key: "{YOUR-API-KEY}"
 peeringdb-query-timeout: 60
+peeringdb-cache: true
 
 ### bgpq4 settings
 bgpq-args: -S AFRINIC,APNIC,ARIN,LACNIC,RIPE
@@ -96,10 +121,10 @@ bgpq-args: -S AFRINIC,APNIC,ARIN,LACNIC,RIPE
 
 ### Kernel Settings
 ########################################
-
 kernel:
   learn: false
   export: true
+### Static routes (remove comment if you want to use)
 #  statics:
 #    "2001:0DB8:3019:a013::/64": "fe80::be24:11ff:fed8:9ab"
 
