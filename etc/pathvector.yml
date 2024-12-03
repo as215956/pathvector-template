@@ -135,6 +135,50 @@ templates:
 
 ### iBGP
   ibgp:
+    asn: {YOUR-ASN}                   # Our own AS
+    tags:                             # Tags to make config more readable
+      - "iBGP"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 4500                  # Local preference
+    default-local-pref: 4500          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: false        # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+      - "{YOUR-ASN}:100:3"            ## Direct Peer
+      - "{YOUR-ASN}:100:4"            ## IX route servers
+      - "{YOUR-ASN}:100:6"            ## iBGP
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 300000             # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: false                 # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: false         # Import limits from PeeringDB
+    auto-as-set: false                # Import as-set from PeeringDB
+    auto-as-set-members: false        # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
 
 ### Upstream / Transit
   upstream:
@@ -148,8 +192,15 @@ templates:
 ### Direct Peer (over Internet Exchange)
   peerIX:
 
-### Downstream / Customers
-  downstream:
+### Downstream / Customers (full table)
+  downstreamFULL:
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    announce-all: true                # Export full table
+
+### Downstream / Customers (partial default table)
+  downstreamDEFAULT:
+    announce-default: true            # Export a default route 0.0.0.0/°, ::/0
+    announce-all: false               # Export full table
 
 
 ### BGP Sessions

@@ -77,6 +77,7 @@ Added on import and export via the "import_default_communities" or "export_defau
 | ASN:100:3                   | Learned from Direct Peer                               |
 | ASN:100:4                   | Learned from IX route servers                          |
 | ASN:100:5                   | Learned from transit/upstream                          |
+| ASN:100:6                   | Learned from iBGP                                      |
 | ASN:101:SESSION_ASN         | Learned from SESSION_NAME                              |
 | ASN:102:IX_ASN              | Learned from Internet Exchange IX_NAME                 |
 | ASN:103:ROUTER_REGION       | Learned in region where router is located              |
