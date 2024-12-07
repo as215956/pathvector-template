@@ -179,6 +179,10 @@ templates:
     auto-as-set: false                # Import as-set from PeeringDB
     auto-as-set-members: false        # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('ibgp', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('ibgp', <pathvector.asn>);
 
 ### Upstream / Transit
   upstream:
@@ -274,9 +278,9 @@ templates:
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
     pre-import-filter:                # Run additional scripts after import
-      add_on_import('ix', <pathvector.asn>);
+      add_on_import('routeserver', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
-      add_on_export('ix', <pathvector.asn>);
+      add_on_export('routeserver', <pathvector.asn>);
 
 ### Direct Peer (physical / tunnel)
   peerPNI:
@@ -422,9 +426,9 @@ templates:
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
     pre-import-filter:                # Run additional scripts after import
-      add_on_import('peer', <pathvector.asn>);
+      add_on_import('downstream', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
-      add_on_export('peer', <pathvector.asn>);
+      add_on_export('downstream', <pathvector.asn>);
 
 ### Downstream / Customers (partial default table)
   downstreamDEFAULT:
@@ -472,9 +476,9 @@ templates:
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
     pre-import-filter:                # Run additional scripts after import
-      add_on_import('peer', <pathvector.asn>);
+      add_on_import('downstream', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
-      add_on_export('peer', <pathvector.asn>);
+      add_on_export('downstream', <pathvector.asn>);
 
 
 ### BGP Sessions
