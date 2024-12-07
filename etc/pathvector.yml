@@ -140,8 +140,8 @@ templates:
       - "iBGP"
     import: true                      # Import routes from this peer
     export: true                      # Export routes to this peer
-    local-pref: 4500                  # Local preference
-    default-local-pref: 4500          # Default local preference
+    local-pref: 100                   # Local preference
+    default-local-pref: 100           # Default local preference
     set-local-pref: true              # Force local preference to be set
     multihop: false                   # Allow multihop connections
     next-hop-self: true               # Nexthop needs to be own listen ip
@@ -486,6 +486,22 @@ templates:
 peers:
 
 ### iBGP
+  router1:
+    template: ibgp
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Core: Router #1 - City/Country (AS66535) {ID} [10Gbit]"
+    comments:
+      - "AS Number: {YOUR-ASN}"
+      - "Name     : Router #1"
+      - "From     : {LOCATION-A}"
+      - "To       : {LOCATION-B}"
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 100                  # Between 100 and 900, higher = more preferred
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
 
 ### Upstream / Transit
   upstream1:
