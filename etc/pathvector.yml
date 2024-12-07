@@ -509,6 +509,11 @@ peers:
     add-on-import:                    # Add our Upstream/Transit specific bgp communities
       - {YOUR-ASN}:100:5
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -539,6 +544,11 @@ peers:
     add-on-import:                    # Add our Upstream/Transit specific bgp communities
       - {YOUR-ASN}:100:4
       - {YOUR-ASN}:102:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -569,6 +579,11 @@ peers:
     add-on-import:                    # Add our Direct Peering over CX specific bgp communities
       - {YOUR-ASN}:100:3
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -598,6 +613,11 @@ peers:
     add-on-import:                    # Add our Direct Peering over Tunnel specific bgp communities
       - {YOUR-ASN}:100:3
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -628,6 +648,11 @@ peers:
     add-on-import:                    # Add our Direct Peering over IX specific bgp communities
       - {YOUR-ASN}:100:3
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -658,6 +683,11 @@ peers:
     add-on-import:                    # Add our Downstream/Customer specific bgp communities
       - {YOUR-ASN}:100:2
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
@@ -688,6 +718,11 @@ peers:
     add-on-import:                    # Add our Downstream/Customer specific bgp communities
       - {YOUR-ASN}:100:2
       - {YOUR-ASN}:101:66535
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
     #listen4: 10.0.0.1                # IPv4 of interface
     listen6: fe80::20                 # IPv6 of interface
     neighbors:                        # Neighbors IP's
