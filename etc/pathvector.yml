@@ -182,25 +182,299 @@ templates:
 
 ### Upstream / Transit
   upstream:
+    role: customer                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Transit"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 1000                  # Local preference
+    default-local-pref: 1000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: false         # Import limits from PeeringDB
+    auto-as-set: false                # Import as-set from PeeringDB
+    auto-as-set-members: false        # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('upstream', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('upstream', <pathvector.asn>);
 
 ### Internet Exchanges (Route Servers)
   routeserver:
+    role: rs-client                   # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "IX-RS"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 2000                  # Local preference
+    default-local-pref: 2000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('ix', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('ix', <pathvector.asn>);
 
 ### Direct Peer (physical / tunnel)
   peerPNI:
+    role: peer                        # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "peerPNI"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 4000                  # Local preference
+    default-local-pref: 4000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300                # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
 
 ### Direct Peer (over Internet Exchange)
   peerIX:
+    role: peer                        # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "peerIX"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 3000                  # Local preference
+    default-local-pref: 3000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300                # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
 
 ### Downstream / Customers (full table)
   downstreamFULL:
+    role: provider                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Customer"
+      - "Full"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 5000                  # Local preference
+    default-local-pref: 5000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
     announce-default: false           # Export a default route 0.0.0.0/°, ::/0
     announce-all: true                # Export full table
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    import-limit6: 50                 # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: true   # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
 
 ### Downstream / Customers (partial default table)
   downstreamDEFAULT:
+    role: provider                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Customer"
+      - "Partial"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 5000                  # Local preference
+    default-local-pref: 5000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
     announce-default: true            # Export a default route 0.0.0.0/°, ::/0
     announce-all: false               # Export full table
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    import-limit6: 50                 # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: true   # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts after import
+      add_on_import('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
 
 
 ### BGP Sessions
