@@ -489,7 +489,7 @@ peers:
   router1:
     template: ibgp
     disabled: true                    # Enable/Disable Upstream session
-    description: "Core: Router #1 - City/Country (AS66535) {ID} [10Gbit]"
+    description: "Core: Router #1 - City/Country (AS{YOUR-ASN}) {{ID}} [10Gbit]"
     comments:
       - "AS Number: {YOUR-ASN}"
       - "Name     : Router #1"
@@ -609,7 +609,7 @@ peers:
   peer2:
     template: peerPNI
     disabled: true                    # Enable/Disable direct peering session
-    description: "Peering: Peer #2 - City/Country (AS66535) {TUNNELID} [1Gbit]"
+    description: "Peering: Peer #2 - City/Country (AS66535) {{TUNNELID}} [1Gbit]"
     comments:
       - "AS Number: 66535"
       - "Name     : Peer #2"
@@ -679,7 +679,7 @@ peers:
   customer1:
     template: downstreamFULL
     disabled: true                    # Enable/Disable Upstream session
-    description: "Customer: Customer #1 - City/Country (AS66535) {CIRCUITID} [1Gbit]"
+    description: "Customer: Customer #1 - City/Country (AS66535) {{CIRCUITID}} [1Gbit]"
     comments:
       - "AS Number: 66535"
       - "Name     : Customer #1"
@@ -714,7 +714,7 @@ peers:
   customer2:
     template: downstreamDEFAULT
     disabled: true                    # Enable/Disable Upstream session
-    description: "Customer: Customer #2 - City/Country (AS66535) {CIRCUITID} [1Gbit]"
+    description: "Customer: Customer #2 - City/Country (AS66535) {{CIRCUITID}} [1Gbit]"
     comments:
       - "AS Number: 66535"
       - "Name     : Customer #2"
