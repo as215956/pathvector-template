@@ -484,11 +484,208 @@ peers:
 ### iBGP
 
 ### Upstream / Transit
+  upstream1:
+    template: upstream
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Transit: Upstream #1 - City/Country (AS66535) [10Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Upstream #1"
+      - "Website  : https://upstream1.local"
+      - "         : https://lg.upstream1.local"
+      - "AS-SET   : AS66535:AS-UPSTREAM1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Transit - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Upstream/Transit
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 1500                 # Between 1000 and 1900, higher = more preferred
+    add-on-import:                    # Add our Upstream/Transit specific bgp communities
+      - {YOUR-ASN}:100:5
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
 
 ### Internet Exchanges (Route Servers)
+  exchange1:
+    template: routeserver
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Peering: Exchange #1 - City/Country (AS66535) [10Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Exchange #1"
+      - "Website  : https://exchange1.local"
+      - "         : https://lg.exchange1.local"
+      - "AS-SET   : AS66535:AS-EXCHANGE1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/ix/66535"
+      - "Peering Type: Exchange #1 Route Servers - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Upstream/Transit
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 2100                 # Between 2000 and 2900, higher = more preferred
+    #receive-limit4: 300              # Maximum number of prefixes to accept
+    receive-limit6: 300               # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Upstream/Transit specific bgp communities
+      - {YOUR-ASN}:100:4
+      - {YOUR-ASN}:102:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
 
 ### Direct Peer (physical / tunnel)
+  peer1:
+    template: peerPNI
+    disabled: true                    # Enable/Disable direct peering session
+    description: "Peering: Peer #1 - City/Country (AS66535) [1Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Peer #1"
+      - "Website  : https://peer1.local"
+      - "         : https://lg.peer1.local"
+      - "AS-SET   : AS66535:AS-PEER1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Direct Peering over CX - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Direct Peering over CX
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 4600                 # Between 4500 and 4900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over CX specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+  peer2:
+    template: peerPNI
+    disabled: true                    # Enable/Disable direct peering session
+    description: "Peering: Peer #2 - City/Country (AS66535) {TUNNELID} [1Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Peer #2"
+      - "Website  : https://peer2.local"
+      - "         : https://lg.peer2.local"
+      - "AS-SET   : AS66535:AS-PEER2"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Direct Peering over Tunnel - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Direct Peering over Tunnel
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 4100                 # Between 4000 and 4400, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over Tunnel specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
 
 ### Direct Peer (over Internet Exchange)
+  peer3:
+    template: peerIX
+    disabled: true                    # Enable/Disable peering session over internet exchange
+    description: "Peering: Peer #3 - City/Country (AS66535) [1Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Peer #3"
+      - "Website  : https://peer3.local"
+      - "         : https://lg.peer3.local"
+      - "AS-SET   : AS66535:AS-PEER3"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Peering over IX - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Direct Peering over IX
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 3600                 # Between 3000 and 3900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over IX specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
 
-### Downstream / Customers
+### Downstream / Customers (Full Table)
+  customer1:
+    template: downstreamFULL
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Customer: Customer #1 - City/Country (AS66535) {CIRCUITID} [1Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Customer #1"
+      - "Website  : https://customer1.local"
+      - "         : https://lg.customer1.local"
+      - "AS-SET   : AS66535:AS-CUSTOMER1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Cusomter Full Table - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Downstream/Customer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 5200                 # Between 5000 and 5900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Downstream/Customer specific bgp communities
+      - {YOUR-ASN}:100:2
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Downstream / Customers (Partial Table)
+  customer2:
+    template: downstreamDEFAULT
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Customer: Customer #2 - City/Country (AS66535) {CIRCUITID} [1Gbit]"
+    comments:
+      - "AS Number: 66535"
+      - "Name     : Customer #2"
+      - "Website  : https://customer2.local"
+      - "         : https://lg.customer2.local"
+      - "AS-SET   : AS66535:AS-CUSTOMER2"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "Peering Type: Cusomter Partial Table - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: 66535                        # ASN of Downstream/Customer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 5300                 # Between 5000 and 5900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Downstream/Customer specific bgp communities
+      - {YOUR-ASN}:100:2
+      - {YOUR-ASN}:101:66535
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
