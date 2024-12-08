@@ -281,9 +281,9 @@ templates:
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
     pre-import-filter:                # Run additional scripts after import
-      add_on_import('routeserver', <pathvector.asn>);
+      add_on_import('ix', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
-      add_on_export('routeserver', <pathvector.asn>);
+      add_on_export('ix', <pathvector.asn>);
 
 ### Direct Peer (physical / tunnel)
   peerPNI:
