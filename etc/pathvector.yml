@@ -182,10 +182,14 @@ templates:
     auto-as-set: false                # Import as-set from PeeringDB
     auto-as-set-members: false        # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('ibgp', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('ibgp', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Upstream / Transit
   upstream:
@@ -231,10 +235,14 @@ templates:
     auto-as-set: false                # Import as-set from PeeringDB
     auto-as-set-members: false        # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('upstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('upstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Internet Exchanges (Route Servers)
   routeserver:
@@ -280,10 +288,14 @@ templates:
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('ix', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('ix', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Direct Peer (physical / tunnel)
   peerPNI:
@@ -330,10 +342,14 @@ templates:
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('peer', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('peer', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Direct Peer (over Internet Exchange)
   peerIX:
@@ -380,10 +396,14 @@ templates:
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('peer', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('peer', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Downstream / Customers (full table)
   downstreamFULL:
@@ -431,10 +451,14 @@ templates:
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('downstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('downstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 ### Downstream / Customers (partial default table)
   downstreamDEFAULT:
@@ -482,10 +506,14 @@ templates:
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
     honor-graceful-shutdown: true     # RFC8326 graceful shutdown
-    pre-import-filter:                # Run additional scripts after import
+    pre-import-filter:                # Run additional scripts before import
       add_on_import('downstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('downstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
 
 
 ### BGP Sessions
