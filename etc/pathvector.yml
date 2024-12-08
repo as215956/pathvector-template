@@ -325,6 +325,7 @@ templates:
     filter-transit-asns: true         # Filter tier1 transit
     filter-prefix-length: true        # Filter too long/short prefixes
     filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
     auto-import-limits: true          # Import limits from PeeringDB
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
@@ -374,6 +375,7 @@ templates:
     filter-transit-asns: true         # Filter tier1 transit
     filter-prefix-length: true        # Filter too long/short prefixes
     filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the as-set
     auto-import-limits: true          # Import limits from PeeringDB
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
@@ -424,6 +426,7 @@ templates:
     filter-transit-asns: true         # Filter tier1 transit
     filter-prefix-length: true        # Filter too long/short prefixes
     filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
     auto-import-limits: true          # Import limits from PeeringDB
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
@@ -474,6 +477,7 @@ templates:
     filter-transit-asns: true         # Filter tier1 transit
     filter-prefix-length: true        # Filter too long/short prefixes
     filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
     auto-import-limits: true          # Import limits from PeeringDB
     auto-as-set: true                 # Import as-set from PeeringDB
     auto-as-set-members: true         # Get members from as-set
@@ -510,7 +514,7 @@ peers:
   upstream1:
     template: upstream
     disabled: true                    # Enable/Disable Upstream session
-    description: "Transit: Upstream #1 - City/Country (AS{UPSTREAM-ASN}) [10Gbit]"
+    description: "Transit: Upstream #1 - City/Country (AS{UPSTREAM-ASN}) {{PORTID}} [10Gbit]"
     comments:
       - "AS Number: {UPSTREAM-ASN}"
       - "Name     : Upstream #1"
@@ -521,7 +525,7 @@ peers:
       - "PeeringDB   : https://www.peeringdb.com/asn/{UPSTREAM-ASN}"
       - "Peering Type: Transit - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {UPSTREAM-ASN}                        # ASN of Upstream/Transit
+    asn: {UPSTREAM-ASN}               # ASN of Upstream/Transit
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 1500                 # Between 1000 and 1900, higher = more preferred
@@ -543,7 +547,7 @@ peers:
   exchange1:
     template: routeserver
     disabled: true                    # Enable/Disable Upstream session
-    description: "Peering: Exchange #1 - City/Country (AS{EXCHANGE-ASN}) [10Gbit]"
+    description: "Peering: Exchange #1 - City/Country (AS{EXCHANGE-ASN}) {{PORTID}} [10Gbit]"
     comments:
       - "AS Number: {EXCHANGE-ASN}"
       - "Name     : Exchange #1"
@@ -554,7 +558,7 @@ peers:
       - "PeeringDB   : https://www.peeringdb.com/ix/{EXCHANGE-ID}"
       - "Peering Type: Exchange #1 Route Servers - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {EXCHANGE-ASN}                        # ASN of Upstream/Transit
+    asn: {EXCHANGE-ASN}               # ASN of Upstream/Transit
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 2100                 # Between 2000 and 2900, higher = more preferred
@@ -578,18 +582,19 @@ peers:
   peer1:
     template: peerPNI
     disabled: true                    # Enable/Disable direct peering session
-    description: "Peering: Peer #1 - City/Country (AS66535) [1Gbit]"
+    description: "Peering: Peer #1 - City/Country (AS{PEER-ASN}) {{PORTID}} [1Gbit]"
     comments:
-      - "AS Number: 66535"
+      - "AS Number: {PEER-ASN}"
       - "Name     : Peer #1"
       - "Website  : https://peer1.local"
       - "         : https://lg.peer1.local"
-      - "AS-SET   : AS66535:AS-PEER1"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER1"
       - "-"
-      - "PeeringDB   : https://www.peeringdb.com/asn/66535"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
       - "Peering Type: Direct Peering over CX - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: 66535                        # ASN of Direct Peering over CX
+    asn: {PEER-ASN}                   # ASN of Direct Peering over CX
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 4600                 # Between 4500 and 4900, higher = more preferred
@@ -597,7 +602,7 @@ peers:
     receive-limit6: 10                # Maximum number of prefixes to accept
     add-on-import:                    # Add our Direct Peering over CX specific bgp communities
       - {YOUR-ASN}:100:3
-      - {YOUR-ASN}:101:66535
+      - {YOUR-ASN}:101:{PEER-ASN}
     #only-announce:                   # Only announce these prefixes
     #  - 2a0a:6044:a520::/48
     #prefix-communities:              # Add bgp community to these prefixes
@@ -618,12 +623,13 @@ peers:
       - "Name     : Peer #2"
       - "Website  : https://peer2.local"
       - "         : https://lg.peer2.local"
-      - "AS-SET   : AS66535:AS-PEER2"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER2"
       - "-"
       - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
       - "Peering Type: Direct Peering over Tunnel - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {PEER-ASN}                        # ASN of Direct Peering over Tunnel
+    asn: {PEER-ASN}                   # ASN of Direct Peering over Tunnel
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 4100                 # Between 4000 and 4400, higher = more preferred
@@ -653,12 +659,16 @@ peers:
       - "Name     : Peer #3"
       - "Website  : https://peer3.local"
       - "         : https://lg.peer3.local"
-      - "AS-SET   : {PEER-ASN}:AS-PEER3"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER3"
       - "-"
       - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
       - "Peering Type: Peering over IX - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {PEER-ASN}                        # ASN of Direct Peering over IX
+    asn: {PEER-ASN}                   # ASN of Direct Peering over IX
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    tags:                             # Tags to make config more readable
+      - "peerIX"
+      - "{InternetExchange}"
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 3600                 # Between 3000 and 3900, higher = more preferred
@@ -688,12 +698,13 @@ peers:
       - "Name     : Customer #1"
       - "Website  : https://customer1.local"
       - "         : https://lg.customer1.local"
-      - "AS-SET   : {CUSTOMER-ASN}:AS-CUSTOMER1"
+      - "AS-SET   : AS{CUSTOMER-ASN}:AS-CUSTOMER1"
       - "-"
       - "PeeringDB   : https://www.peeringdb.com/asn/{CUSTOMER-ASN}"
       - "Peering Type: Cusomter Full Table - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {CUSTOMER-ASN}                        # ASN of Downstream/Customer
+    asn: {CUSTOMER-ASN}               # ASN of Downstream/Customer
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 5200                 # Between 5000 and 5900, higher = more preferred
@@ -723,12 +734,13 @@ peers:
       - "Name     : Customer #2"
       - "Website  : https://customer2.local"
       - "         : https://lg.customer2.local"
-      - "AS-SET   : {CUSTOMER-ASN}:AS-CUSTOMER2"
+      - "AS-SET   : AS{CUSTOMER-ASN}:AS-CUSTOMER2"
       - "-"
       - "PeeringDB   : https://www.peeringdb.com/asn/{CUSTOMER-ASN}"
       - "Peering Type: Cusomter Partial Table - Datacenter/City/Country"
       - "Network Type: Educational/Research, Network Services"
-    asn: {CUSTOMER-ASN}                        # ASN of Downstream/Customer
+    asn: {CUSTOMER-ASN}               # ASN of Downstream/Customer
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
     multihop: false                   # Allow multihop connections
     prepends: 0                       # Prepend own ASN x times
     #local-pref: 5300                 # Between 5000 and 5900, higher = more preferred
