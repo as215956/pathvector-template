@@ -108,6 +108,22 @@ create_as_set() {
     echo " [DONE]"
 }
 
+create_ospf_range() {
+    FILE="${DEFINITIONS_DIR}/MY_OSPF_RANGE.conf"
+    ASN=$(echo "${AS_SET_ALL}" | tr ":" " " | awk {'print $1'})
+    echo -n " *** Loading AS-Set: OSPF RANGE"
+    CMD="/usr/bin/bgpq4 -Ab6 -r 52 -R 128 -l 'define MY_OSPF_RANGE' ${ASN}"
+    echo "#!/bin/bash" > temp_update.sh
+    echo "${CMD}" >> temp_update.sh
+    RES=$(sh temp_update.sh)
+    echo "${HEADER}" > ${FILE}
+    echo "# ${CMD}" >> ${FILE}
+    echo "${RES}" >> ${FILE}
+    CMD=$(rm -f temp_update.sh)
+    echo " [DONE]"
+}
+
+
 create_as_set_all() {
     if [[ ! -z "${AS_SET_ALL}" ]]; then
         create_as_set "MY_AS_SET_ALL" "${AS_SET_ALL}"
@@ -136,6 +152,7 @@ main() {
     create_as_set_all
     create_as_set_downstream
     create_as_set_upstream
+    create_ospf_range
     run_pv
 }
 

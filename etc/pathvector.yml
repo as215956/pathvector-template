@@ -189,7 +189,7 @@ templates:
     pre-export:                       # Run additional scripts before export
       add_on_export('ibgp', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
-      add_on_export_post('downstream', <pathvector.asn>);
+      add_on_export_post('ibgp', <pathvector.asn>);
 
 ### Upstream / Transit
   upstream:
@@ -238,11 +238,11 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('upstream', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('upstream', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('upstream', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
-      add_on_export_post('downstream', <pathvector.asn>);
+      add_on_export_post('upstream', <pathvector.asn>);
 
 ### Internet Exchanges (Route Servers)
   routeserver:
@@ -291,11 +291,11 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('ix', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('ix', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('ix', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
-      add_on_export_post('downstream', <pathvector.asn>);
+      add_on_export_post('ix', <pathvector.asn>);
 
 ### Direct Peer (physical / tunnel)
   peerPNI:
@@ -345,11 +345,11 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('peer', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('peer', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('peer', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
-      add_on_export_post('downstream', <pathvector.asn>);
+      add_on_export_post('peer', <pathvector.asn>);
 
 ### Direct Peer (over Internet Exchange)
   peerIX:
@@ -399,11 +399,11 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('peer', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('peer', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('peer', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
-      add_on_export_post('downstream', <pathvector.asn>);
+      add_on_export_post('peer', <pathvector.asn>);
 
 ### Downstream / Customers (full table)
   downstreamFULL:
@@ -454,7 +454,7 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('downstream', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('downstream', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('downstream', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
@@ -509,7 +509,7 @@ templates:
     pre-import-filter:                # Run additional scripts before import
       add_on_import('downstream', <pathvector.asn>);
     post-import-filter:               # Run additional scripts after import
-      add_on_import_post('ibgp', <pathvector.asn>);
+      add_on_import_post('downstream', <pathvector.asn>);
     pre-export:                       # Run additional scripts before export
       add_on_export('downstream', <pathvector.asn>);
     pre-export-final:                 # Run additional scripts after export
