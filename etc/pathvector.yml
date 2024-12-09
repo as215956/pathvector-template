@@ -1,0 +1,789 @@
+################################################################################
+###                                                                          ###
+###   AS215956.net - Pathvector Updater                                      ###
+##########################################                                   ###
+###                                                                          ###
+###   File      : pathvector config file                                     ###
+###   Version   : 2024.12-001                                                ###
+###   Copyright : 2024 (and beyond) - Dennis de Houx, AS215956, All In One   ###
+###   Author    : Dennis de Houx <dennis@dehoux.be>                          ###
+###   License   : MIT                                                        ###
+###                                                                          ###
+################################################################################
+
+
+###
+### NOTE: please replace all placeholders in { } and remove the brackets { } !!!
+###       double brackets {{  }} need to be change to single brackets { }
+###       example: (AS{PEER-ASN}) becomes: (AS65535)
+###                {{TUNNELID}} becomes: {123456}
+###       feel free to adjust this config to your needs
+###
+
+
+### General Settings
+########################################
+
+### Basic router settings
+asn: {YOUR-ASN}
+router-id: {YOUR-ROUTER-IPv4}
+hostname: {YOUR-ROUTER-HOSTNAME}
+accept-default: true
+default-route: false
+keep-filtered: true
+#merge-paths: true
+
+### Default bgp communities on all exports
+origin-communities:
+  - {YOUR-ASN}:100:1
+
+local-communities:
+  - {YOUR-ASN}:100:1
+
+### Announce local prefixes
+prefixes:
+  - {2001:0DB8:beef::/40}
+  - {2001:0DB8:dead::/48}
+
+### Default add on import on all sessions (remove comment if you want to use)
+#add-on-import:
+#  - {YOUR-ASN}:xxx:xxx
+
+### Default add on export on all sessions (remove comment if you want to use)
+#add-on-export:
+#  - {YOUR-ASN}:xxx:xxx
+
+### Default blocklist ASN and/or prefixes (remove comment if you want to use)
+#blocklist:
+# - {AS65536}
+# - {2001:0DB8:beef::/48}
+
+### Default blocklist ASN and/or prefixes from url (remove comment if you want to use)
+#blocklist-urls:
+# - {http://localhost/blocklist/prefixes}
+# - {http://localhost/blocklist/asns}
+
+### Default blocklist ASN and/or prefixes from files (remove comment if you want to use)
+#blocklist-files:
+# - {/opt/as215956/pathvector/blocklist.txt}
+# - {/etc/bird/define/blocklist.conf}
+
+### Opinionated Tier1 transit list
+transit-asns:
+  - 174   # Cogent Communications
+  - 209   # Qwest (HE carries this on IXPs IPv6 (Jul 12 2018)) / CenturyLink Communications
+  - 701   # UUNET / Verizon Business
+  - 702   # UUNET / Verizon Business
+  - 1239  # Sprint
+  - 1299  # Telia / Arelion Sweden / Twelve99
+  - 2149  # Cogent Communications
+  - 2914  # NTT Communications
+  - 3257  # GTT Backbone
+  - 3320  # Deutsche Telekom AG (DTAG)
+  - 3356  # Level3
+  - 3491  # PCCW Global
+  - 3549  # Level3
+  - 3561  # Savvis / CenturyLink Communications
+  - 4134  # Chinanet Backbone
+  - 5511  # Orange opentransit
+  - 6453  # Tata Communications (America)
+  - 6461  # Zayo Bandwidth
+  - 6494  # Cogent Communications
+  - 6640  # CenturyLink Communications
+  - 6762  # Seabone / Telecom Italia Sparkle
+  - 6830  # Liberty Global
+  - 6939  # Hurricane Electric
+  - 7018  # AT&T Services
+  - 58682 # Level3 Carrier
+
+### RPKI & IRR settings (only use one rtr server)
+rpki-enable: true
+### ripe.net (https://rpki-validator.ripe.net/)
+#rtr-server: rpki-validator.ripe.net:3323   # IPv4: 193.0.11.46, IPv6: 2001:67c:2e8:25::c100:b2e
+### rpki.cloud (https://github.com/rpki-cloud/rpki.cloud)
+#rtr-server: r1.rpki.cloud:3323             # IPv4: 184.73.232.63, IPv6: 2600:1f18:e99:5401:e875:17cd:7a52:5d6c
+#rtr-server: r2.rpki.cloud:3323             # IPv4: 52.52.161.24, IPv6: 2600:1f1c:244:6000:e347:c4c8:56a2:d665
+### cloudflare (https://rpki.cloudflare.com)
+rtr-server: rtr.rpki.cloudflare.com:8282    # IPv4: 172.65.0.2, IPv6: 2606:4700:60::2
+irr-server: rr.ntt.net                      # IPv4: 128.241.192.40, IPv6: 2001:418:3ff:5::192:40
+irr-query-timeout: 30
+
+### Pathvector settings
+log-file: /var/log/pathvector.log
+web-ui-file: /opt/as215956/pathvector/ui/index.html
+
+### PeeringDB settings
+peeringdb-url: https://peeringdb.com/api/
+peeringdb-api-key: "{YOUR-API-KEY}"
+peeringdb-query-timeout: 60
+peeringdb-cache: true
+
+### bgpq4 settings
+bgpq-args: -S AFRINIC,APNIC,ARIN,LACNIC,RIPE
+
+
+### Kernel Settings
+########################################
+kernel:
+  learn: false
+  export: true
+### Static routes (remove comment if you want to use)
+#  statics:
+#    "2001:0DB8:3019:a013::/64": "fe80::be24:11ff:fed8:9ab"
+
+
+### Peer templates
+########################################
+templates:
+
+### iBGP
+  ibgp:
+    asn: {YOUR-ASN}                   # Our own AS
+    tags:                             # Tags to make config more readable
+      - "iBGP"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 100                   # Local preference
+    default-local-pref: 100           # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: false        # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+      - "{YOUR-ASN}:100:3"            ## Direct Peer
+      - "{YOUR-ASN}:100:4"            ## IX route servers
+      - "{YOUR-ASN}:100:6"            ## iBGP
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 300000             # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: false                 # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: false         # Import limits from PeeringDB
+    auto-as-set: false                # Import as-set from PeeringDB
+    auto-as-set-members: false        # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('ibgp', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ibgp', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('ibgp', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('ibgp', <pathvector.asn>);
+
+### Upstream / Transit
+  upstream:
+    role: customer                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Transit"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 1000                  # Local preference
+    default-local-pref: 1000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: false         # Import limits from PeeringDB
+    auto-as-set: false                # Import as-set from PeeringDB
+    auto-as-set-members: false        # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('upstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('upstream', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('upstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('upstream', <pathvector.asn>);
+
+### Internet Exchanges (Route Servers)
+  routeserver:
+    role: rs-client                   # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "IX-RS"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 2000                  # Local preference
+    default-local-pref: 2000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300000             # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('ix', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('ix', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('ix', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('ix', <pathvector.asn>);
+
+### Direct Peer (physical / tunnel)
+  peerPNI:
+    role: peer                        # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "peerPNI"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 4000                  # Local preference
+    default-local-pref: 4000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300                # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('peer', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('peer', <pathvector.asn>);
+
+### Direct Peer (over Internet Exchange)
+  peerIX:
+    role: peer                        # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "peerIX"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 3000                  # Local preference
+    default-local-pref: 3000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: false         # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    remove-all-communities: {YOUR-ASN} # Do not send your own communities to upstream
+    import-limit6: 300                # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: disable   # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: false  # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the as-set
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('peer', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('peer', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('peer', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('peer', <pathvector.asn>);
+
+### Downstream / Customers (full table)
+  downstreamFULL:
+    role: provider                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Customer"
+      - "Full"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 5000                  # Local preference
+    default-local-pref: 5000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: false           # Export a default route 0.0.0.0/°, ::/0
+    announce-all: true                # Export full table
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    import-limit6: 50                 # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: true   # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('downstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('downstream', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('downstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
+
+### Downstream / Customers (partial default table)
+  downstreamDEFAULT:
+    role: provider                    # RFC 9234 Local BGP role (provider|rs|rs-client|customer|peer)
+    tags:                             # Tags to make config more readable
+      - "Customer"
+      - "Partial"
+    import: true                      # Import routes from this peer
+    export: true                      # Export routes to this peer
+    local-pref: 5000                  # Local preference
+    default-local-pref: 5000          # Default local preference
+    set-local-pref: true              # Force local preference to be set
+    multihop: false                   # Allow multihop connections
+    next-hop-self: true               # Nexthop needs to be own listen ip
+    remove-private-asns: true         # Remove Private ASN's from aspath before export
+    interpret-communities: true       # Well-known RRFC's
+    advertise-hostname: true          # Advertise hostname to peer
+    disable-after-error: false        # Disable peer after an error
+    announce-default: true            # Export a default route 0.0.0.0/°, ::/0
+    announce-all: false               # Export full table
+    allow-local-as: true              # Announce routes originated by local AS
+    announce-originated: true         # Announce originated routes
+    announce:                         # Announce prefixes with following bgp community
+      - "{YOUR-ASN}:100:1"            ## Originated
+      - "{YOUR-ASN}:100:2"            ## Downstream / Customers
+    import-limit6: 50                 # Maximum number of prefixes to import after filters
+    export-limit6: 100                # Maximum number of prefixes to export after filters
+    import-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    export-limit-violation: warn      # Action when limit is tripped (disabled|warn)
+    receive-limit-violation: warn     # Action when limit is tripped (disabled|warn)
+    enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
+    enforce-peer-nexthop: true        # Only accept routes where next-hop is equal to neighbor ip
+    allow-blackhole-community: true   # Send blackholed routes to peer
+    filter-irr: true                  # Enable IRR Filtering
+    filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
+    strict-rpki: false                # Only accecpt RPKI signed prefixes
+    filter-max-prefix: true           # Filter maximum prefix
+    filter-bogon-routes: true         # Filter bogon prefixes
+    filter-bogon-asns: true           # Filter bogon asn's
+    filter-transit-asns: true         # Filter tier1 transit
+    filter-prefix-length: true        # Filter too long/short prefixes
+    filter-blocklist: true            # Filter global blocklist
+    filter-as-set: true               # Filter routes that aren't originated by an ASN in the AS-SET
+    auto-import-limits: true          # Import limits from PeeringDB
+    auto-as-set: true                 # Import as-set from PeeringDB
+    auto-as-set-members: true         # Get members from as-set
+    honor-graceful-shutdown: true     # RFC8326 graceful shutdown
+    pre-import-filter:                # Run additional scripts before import
+      add_on_import('downstream', <pathvector.asn>);
+    post-import-filter:               # Run additional scripts after import
+      add_on_import_post('downstream', <pathvector.asn>);
+    pre-export:                       # Run additional scripts before export
+      add_on_export('downstream', <pathvector.asn>);
+    pre-export-final:                 # Run additional scripts after export
+      add_on_export_post('downstream', <pathvector.asn>);
+
+
+### BGP Sessions
+########################################
+peers:
+
+### iBGP
+  router1:
+    template: ibgp
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Core: Router #1 - City/Country (AS{YOUR-ASN}) {{ID}} [10Gbit]"
+    comments:
+      - "AS Number: {YOUR-ASN}"
+      - "Name     : Router #1"
+      - "From     : {LOCATION-A}"
+      - "To       : {LOCATION-B}"
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 100                  # Between 100 and 900, higher = more preferred
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Upstream / Transit
+  upstream1:
+    template: upstream
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Transit: Upstream #1 - City/Country (AS{UPSTREAM-ASN}) {{PORTID}} [10Gbit]"
+    comments:
+      - "AS Number: {UPSTREAM-ASN}"
+      - "Name     : Upstream #1"
+      - "Website  : https://upstream1.local"
+      - "         : https://lg.upstream1.local"
+      - "AS-SET   : {UPSTREAM-ASN}:AS-UPSTREAM1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{UPSTREAM-ASN}"
+      - "Peering Type: Transit - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {UPSTREAM-ASN}               # ASN of Upstream/Transit
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 1500                 # Between 1000 and 1900, higher = more preferred
+    add-on-import:                    # Add our Upstream/Transit specific bgp communities
+      - {YOUR-ASN}:100:5
+      - {YOUR-ASN}:101:{UPSTREAM-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Internet Exchanges (Route Servers)
+  exchange1:
+    template: routeserver
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Peering: Exchange #1 - City/Country (AS{EXCHANGE-ASN}) {{PORTID}} [10Gbit]"
+    comments:
+      - "AS Number: {EXCHANGE-ASN}"
+      - "Name     : Exchange #1"
+      - "Website  : https://exchange1.local"
+      - "         : https://lg.exchange1.local"
+      - "AS-SET   : {EXCHANGE-ASN}:AS-EXCHANGE1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/ix/{EXCHANGE-ID}"
+      - "Peering Type: Exchange #1 Route Servers - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {EXCHANGE-ASN}               # ASN of Upstream/Transit
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 2100                 # Between 2000 and 2900, higher = more preferred
+    #receive-limit4: 300              # Maximum number of prefixes to accept
+    receive-limit6: 300               # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Upstream/Transit specific bgp communities
+      - {YOUR-ASN}:100:4
+      - {YOUR-ASN}:102:{EXCHANGE-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Direct Peer (physical / tunnel)
+  peer1:
+    template: peerPNI
+    disabled: true                    # Enable/Disable direct peering session
+    description: "Peering: Peer #1 - City/Country (AS{PEER-ASN}) {{PORTID}} [1Gbit]"
+    comments:
+      - "AS Number: {PEER-ASN}"
+      - "Name     : Peer #1"
+      - "Website  : https://peer1.local"
+      - "         : https://lg.peer1.local"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
+      - "Peering Type: Direct Peering over CX - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {PEER-ASN}                   # ASN of Direct Peering over CX
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 4600                 # Between 4500 and 4900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over CX specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:{PEER-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+  peer2:
+    template: peerPNI
+    disabled: true                    # Enable/Disable direct peering session
+    description: "Peering: Peer #2 - City/Country (AS{PEER-ASN}) {{TUNNELID}} [1Gbit]"
+    comments:
+      - "AS Number: {PEER-ASN}"
+      - "Name     : Peer #2"
+      - "Website  : https://peer2.local"
+      - "         : https://lg.peer2.local"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER2"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
+      - "Peering Type: Direct Peering over Tunnel - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {PEER-ASN}                   # ASN of Direct Peering over Tunnel
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 4100                 # Between 4000 and 4400, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over Tunnel specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:{PEER-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Direct Peer (over Internet Exchange)
+  peer3:
+    template: peerIX
+    disabled: true                    # Enable/Disable peering session over internet exchange
+    description: "Peering: Peer #3 - City/Country (AS{PEER-ASN}) [1Gbit]"
+    comments:
+      - "AS Number: {PEER-ASN}"
+      - "Name     : Peer #3"
+      - "Website  : https://peer3.local"
+      - "         : https://lg.peer3.local"
+      - "AS-SET   : AS{PEER-ASN}:AS-PEER3"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{PEER-ASN}"
+      - "Peering Type: Peering over IX - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {PEER-ASN}                   # ASN of Direct Peering over IX
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    tags:                             # Tags to make config more readable
+      - "peerIX"
+      - "{InternetExchange}"
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 3600                 # Between 3000 and 3900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Direct Peering over IX specific bgp communities
+      - {YOUR-ASN}:100:3
+      - {YOUR-ASN}:101:{PEER-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Downstream / Customers (Full Table)
+  customer1:
+    template: downstreamFULL
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Customer: Customer #1 - City/Country (AS{CUSTOMER-ASN}) {{CIRCUITID}} [1Gbit]"
+    comments:
+      - "AS Number: {CUSTOMER-ASN}"
+      - "Name     : Customer #1"
+      - "Website  : https://customer1.local"
+      - "         : https://lg.customer1.local"
+      - "AS-SET   : AS{CUSTOMER-ASN}:AS-CUSTOMER1"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{CUSTOMER-ASN}"
+      - "Peering Type: Cusomter Full Table - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {CUSTOMER-ASN}               # ASN of Downstream/Customer
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 5200                 # Between 5000 and 5900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Downstream/Customer specific bgp communities
+      - {YOUR-ASN}:100:2
+      - {YOUR-ASN}:101:{CUSTOMER-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2
+
+### Downstream / Customers (Partial Table)
+  customer2:
+    template: downstreamDEFAULT
+    disabled: true                    # Enable/Disable Upstream session
+    description: "Customer: Customer #2 - City/Country (AS{CUSTOMER-ASN}) {{CIRCUITID}} [1Gbit]"
+    comments:
+      - "AS Number: {CUSTOMER-ASN}"
+      - "Name     : Customer #2"
+      - "Website  : https://customer2.local"
+      - "         : https://lg.customer2.local"
+      - "AS-SET   : AS{CUSTOMER-ASN}:AS-CUSTOMER2"
+      - "-"
+      - "PeeringDB   : https://www.peeringdb.com/asn/{CUSTOMER-ASN}"
+      - "Peering Type: Cusomter Partial Table - Datacenter/City/Country"
+      - "Network Type: Educational/Research, Network Services"
+    asn: {CUSTOMER-ASN}               # ASN of Downstream/Customer
+    #as-set: {PEER-AS-SET}            # AS-set of the peer
+    multihop: false                   # Allow multihop connections
+    prepends: 0                       # Prepend own ASN x times
+    #local-pref: 5300                 # Between 5000 and 5900, higher = more preferred
+    #receive-limit4: 10               # Maximum number of prefixes to accept
+    receive-limit6: 10                # Maximum number of prefixes to accept
+    add-on-import:                    # Add our Downstream/Customer specific bgp communities
+      - {YOUR-ASN}:100:2
+      - {YOUR-ASN}:101:{CUSTOMER-ASN}
+    #only-announce:                   # Only announce these prefixes
+    #  - 2a0a:6044:a520::/48
+    #prefix-communities:              # Add bgp community to these prefixes
+    #  "2a0a:6044:a520::/48":
+    #    - 215956:100:10
+    #listen4: 10.0.0.1                # IPv4 of interface
+    listen6: fe80::20                 # IPv6 of interface
+    neighbors:                        # Neighbors IP's
+      - fe80::1
+      - fe80::2

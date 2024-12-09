@@ -1,7 +1,7 @@
 # AS215956.net - Pathvector Template
 
 Starting template for use with pathvector, config is made for my
-modified pathvector version (you can find this in my repository).
+modified pathvector version (you can find this in my other [repository](https://github.com/as215956/pathvector)).
 But this only includes the extra description information and has
 no impact on any functional settings.
 
@@ -31,33 +31,42 @@ by pathvector.
 | /etc/bird/definitions/         | Extra bird2 definitions used by my functions (also includes the auto generated ones) |
 | /etc/bird/functions/           | Extra bird2 functions called by pathvector config                                    |
 | /etc/bird/protocols/           | Extra bird2 protocols (example ospf)                                                 |
+| /etc/cron.d/update-pathvector  | Example crontab running once a day at 03:23                                          |
+| /etc/systemd/user/             | Example systemd service and timer running once a day at 03:23                        |
 
 Feel free to adjust to locations of these files, but be aware of any hardcoded paths!
-In case you modify the "manual_includes.conf" file take note off the order loading the other included files, first definitions, then functions (that need the definitions) and then protocols that could need functions and or definitions.
+In case you modify the "manual_includes.conf" file take note off the order loading the other included files, first definitions, then functions (that need the definitions) and then protocols that could need functions and/or definitions.
 
 ## Configuration
 
-The pathvector configuration contains a few examples to get you started, but feel free to adjust or add/remove configuration items as you please for the template or peers.
+The pathvector configuration contains a few examples to get you started, but feel free to adjust, modify, add or remove configuration items as you please for the templates or peers.
 
 Following files are required to have valid configuration data:
 
 | File                               | Description                                                                     |
 | ---------------------------------- | ------------------------------------------------------------------------------- |
-| /etc/pathvector.conf               | Main pathvector config                                                          |
+| /etc/pathvector.yml                | Main pathvector config                                                          |
 | /etc/bird/definitions/general.conf | General definitions used by scripts (explanation is include in the file itself) |
 
 Pathvector documentation: [https://pathvector.io/docs/configuration](https://pathvector.io/docs/configuration)
 
 ## Usage
 
-Using the script is very easy, I have created one script that runs all extra definition updates and then call pathvector to created the final bird2 configuration. The script is run in a very verbose and debug output so it is easier to spot any fault that may occur.
+Using the script is very easy, I have created one script that runs all extra definition updates and then call pathvector to created the final bird2 configuration and reload bird2 with the new configuration. The script is run in a very verbose and debug output so it is easier to spot any fault that may occur.
 
 ```bash
 cd /opt/as215956/pathvector
 ./update-pathvector.sh
 ```
 
-I also recommend to place this script in a crontab or systemd timer, how many times you run the update is up to you. But I would not recommend to tun more then once an hour, personally I think once every 24 hours is fine.
+Script parameters:
+
+| parameter | description                                    |
+| --------- | ---------------------------------------------- |
+| --dry-run | Run the script but do not reload bird2         |
+| --log     | Write output to log file instead of showing it |
+
+I also recommend to run this script in a crontab or systemd timer, how many times you run the update is up to you. But I would not recommend to run it more then once an hour, personally I think once every 24 hours is fine. Examples are provided in "/etc/cron.d" and "/etc/systemd/user".
 
 ## Special thanks to
 

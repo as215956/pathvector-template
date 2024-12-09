@@ -3,7 +3,7 @@
 ###   AS215956.net - Pathvector Updater                                      ###
 ##########################################                                   ###
 ###                                                                          ###
-###   File      : ospf protocol includes for bird2                           ###
+###   File      : crontab                                                    ###
 ###   Version   : 2024.12-001                                                ###
 ###   Copyright : 2024 (and beyond) - Dennis de Houx, AS215956, All In One   ###
 ###   Author    : Dennis de Houx <dennis@dehoux.be>                          ###
@@ -11,6 +11,4 @@
 ###                                                                          ###
 ################################################################################
 
-###
-### NOTE: Place your ospf config in this file
-###
+23 3 * * * bird /opt/as215956/pathvector/update-pathvector.sh --log > /dev/null 2>&1
