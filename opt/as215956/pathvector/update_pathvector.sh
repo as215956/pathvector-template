@@ -27,6 +27,15 @@ check_bird_dirs() {
     echo " [DONE]"
 }
 
+check_log_file() {
+    echo -n " *** Checking log file permissions:"
+    if [[ ! -f "/var/log/pathvector.log" ]]; then
+        CMD=$(touch /var/log/pathvector.log)
+    fi
+    CMD=$(chown bird:bird /var/log/pathvector.log)
+    echo " [DONE]"
+}
+
 create_general() {
     FILE="${DEFINITIONS_DIR}/general.conf"
     echo -n " *** Create general.conf:"
@@ -97,6 +106,7 @@ main() {
     check_progs
     load_settings
     check_bird_dirs
+    check_log_file
     create_general
     create_as_set_all
     create_as_set_downstream
