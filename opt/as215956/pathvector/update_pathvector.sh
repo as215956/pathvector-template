@@ -13,6 +13,8 @@
 ###                                                                          ###
 ################################################################################
 
+APP_DIR="/opt/as215956/pathvector"
+
 
 check_progs() {
     if [[ ! -f "/usr/bin/bgpq4" ]]; then
@@ -83,12 +85,31 @@ load_settings() {
     DEFINITIONS_DIR="${BIRD2_DIR}/definitions"
     CURRENT_DATE=$(date +%d/%m/%Y)
     HEADER=$(created_by_header)
-    if [[ ! -f "${DEFINITIONS_DIR}/general.conf" ]]; then
+    if [[ ! -f "${APP_DIR}/general.conf" ]]; then
         echo "Error: general definitions file could not be found on this system"
-        echo "       ${DEFINITIONS_DIR}/general.conf"
+        echo "       ${APP_DIR}/general.conf"
         exit 1
     fi
-    . ${DEFINITIONS_DIR}/general.conf
+    . ${APP_DIR}/general.conf
+}
+
+check_bird_dirs() {
+    echo -n " *** Checking bird directories:"
+    if [[ ! -d "${DEFINITIONS_DIR}" ]]; then
+        CMD=$(mkdir -p ${DEFINITIONS_DIR})
+    fi
+    echo " [DONE]"
+}
+
+create_general() {
+    FILE="${DEFINITIONS_DIR}/general.conf"
+    echo -n " *** Create general.conf:"
+    echo "${HEADER}" > ${FILE}
+    echo "define ROUTER_REGION_CODE = \"${ROUTER_REGION_CODE}\";" >> ${FILE}
+    echo "define ROUTER_COUNTRY_CODE = \"${ROUTER_COUNTRY_CODE}\";" >> ${FILE}
+    echo "define ROUTER_LOCATION_ID = \"${ROUTER_LOCATION_ID}\";" >> ${FILE}
+    echo "define ROUTER_ROUTER_ID = \"${ROUTER_ID}\";" >> ${FILE}
+    echo " [DONE]"
 }
 
 create_as_set() {
@@ -149,6 +170,8 @@ run_pv() {
 main() {
     check_progs
     load_settings
+    check_bird_dirs
+    create_general
     create_as_set_all
     create_as_set_downstream
     create_as_set_upstream
