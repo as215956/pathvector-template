@@ -228,7 +228,7 @@ templates:
     filter-max-prefix: true           # Filter maximum prefix
     filter-bogon-routes: true         # Filter bogon prefixes
     filter-bogon-asns: true           # Filter bogon asn's
-    filter-transit-asns: true         # Filter tier1 transit
+    filter-transit-asns: false        # Filter tier1 transit
     filter-prefix-length: true        # Filter too long/short prefixes
     filter-blocklist: true            # Filter global blocklist
     auto-import-limits: false         # Import limits from PeeringDB
