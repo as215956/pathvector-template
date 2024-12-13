@@ -93,8 +93,8 @@ load_settings() {
 
 create_as_set() {
     TEMP_FILE="temp_update.sh"
-    VARIABLE=${2}
-    ASSET=${3}
+    VARIABLE=${1}
+    ASSET=${2}
     FILE="${DEFINITIONS_DIR}/${VARIABLE}.conf"
     echo -n " *** Loading AS-Set: ${ASSET}"
     CMD="/usr/bin/bgpq4 -tb -l 'define ${VARIABLE}' ${ASSET}"
