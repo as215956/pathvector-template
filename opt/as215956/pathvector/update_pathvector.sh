@@ -97,7 +97,7 @@ create_as_set() {
     ASSET=${2}
     FILE="${DEFINITIONS_DIR}/${VARIABLE}.conf"
     echo -n " *** Loading AS-Set: ${ASSET}"
-    CMD="/usr/bin/bgpq4 -tb -l 'define ${VARIABLE}' ${ASSET}"
+    CMD="/usr/bin/bgpq4 -S AFRINIC,APNIC,ARIN,LACNIC,RIPE -tb -l 'define ${VARIABLE}' ${ASSET}"
     echo "#!/bin/bash" > ${TEMP_FILE}
     echo "${CMD}" >> ${TEMP_FILE}
     RES=$(sh ${TEMP_FILE})
@@ -112,7 +112,7 @@ create_ospf_range() {
     FILE="${DEFINITIONS_DIR}/MY_OSPF_RANGE.conf"
     ASN=$(echo "${AS_SET_ALL}" | tr ":" " " | awk {'print $1'})
     echo -n " *** Loading AS-Set: OSPF RANGE"
-    CMD="/usr/bin/bgpq4 -Ab6 -r 52 -R 128 -l 'define MY_OSPF_RANGE' ${ASN}"
+    CMD="/usr/bin/bgpq4 -S AFRINIC,APNIC,ARIN,LACNIC,RIPE -Ab6 -r 52 -R 128 -l 'define MY_OSPF_RANGE' ${ASN}"
     echo "#!/bin/bash" > temp_update.sh
     echo "${CMD}" >> temp_update.sh
     RES=$(sh temp_update.sh)
