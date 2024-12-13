@@ -34,7 +34,7 @@ create_general() {
     echo "define ROUTER_REGION_CODE = ${ROUTER_REGION_CODE};" >> ${FILE}
     echo "define ROUTER_COUNTRY_CODE = ${ROUTER_COUNTRY_CODE};" >> ${FILE}
     echo "define ROUTER_LOCATION_ID = ${ROUTER_LOCATION_ID};" >> ${FILE}
-    echo "define ROUTER_ROUTER_ID = ${ROUTER_ID};" >> ${FILE}
+    echo "define ROUTER_ID = ${ROUTER_ID};" >> ${FILE}
     echo " [DONE]"
 }
 
