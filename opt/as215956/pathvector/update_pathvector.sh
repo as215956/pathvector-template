@@ -34,6 +34,13 @@ check_log_file() {
     fi
     CMD=$(chown bird:bird /var/log/pathvector.log)
     echo " [DONE]"
+
+        echo -n " *** Checking log file permissions:"
+    if [[ ! -f "/var/log/bird.log" ]]; then
+        CMD=$(touch /var/log/bird.log)
+    fi
+    CMD=$(chown bird:bird /var/log/bird.log)
+    echo " [DONE]"
 }
 
 create_general() {
