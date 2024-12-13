@@ -222,7 +222,7 @@ templates:
     enforce-first-as: false           # Only accept routes where first AS is equal to neighbor
     enforce-peer-nexthop: false       # Only accept routes where next-hop is equal to neighbor ip
     allow-blackhole-community: false  # Send blackholed routes to peer
-    filter-irr: true                  # Enable IRR Filtering
+    filter-irr: false                 # Enable IRR Filtering
     filter-rpki: true                 # Enable RPKI Filtering, reject unvalid prefixes
     strict-rpki: false                # Only accecpt RPKI signed prefixes
     filter-max-prefix: true           # Filter maximum prefix
